@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Create new Phone</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#newPhoneForm').submit(function (event) {
+                var name = $('#name').val();
+                var brand = $('#brand').val();
+                var price = $('#price').val();
+                var json = {"name": name, "brand": brand, "price": price};
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type: "POST",
+                    data: JSON.stringify(json),
+                    url: "/phones/savePhone",
+                    success: function (phone) {
+                        var respContent = "";
+                        respContent += "<span class='success'>Phone was created: [";
+                        respContent += phone.name + " : ";
+                        respContent += phone.brand + " : ";
+                        respContent += phone.price + "]</span>"
+                        $("#PhoneFromResponse").html(respContent);
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="container">
+    <fieldset style="height: fit-content; width: fit-content">
+        <legend><h1 style="color: darkred">Create new Phone</h1></legend>
+        <div>
+            <div id="PhoneFromResponse"></div>
+        </div>
+        <form id="newPhoneForm" th:object="${phone}">
+            <table>
+                <tbody>
+                <tr>
+                    <td>Name:</td>
+                    <td><input th:field="*{name}"/></td>
+                </tr>
+                <tr>
+                    <td>Brand:</td>
+                    <td>
+                        <select id="brand">
+                            <option selected="selected" value="oppo">Oppo</option>
+                            <option value="iphone">iPhone</option>
+                            <option value="xiaomi">Xiaomi</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input th:field="*{price}"/></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Create"/></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <br>
+        <button><a th:href="@{/phones}">Phone List</a></button>
+    </fieldset>
+</div>
+</body>
+</html>
